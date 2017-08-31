@@ -9,6 +9,6 @@
         <tag:logOut></tag:logOut>
         <h1>Llista de presuposts</h1>
         <tag:budgetList></tag:budgetList>
-        <a href="createBudget.jsp">Afegir presupost</a>
+        <tag:budgetForm></tag:budgetForm>
     </body>
 </html>

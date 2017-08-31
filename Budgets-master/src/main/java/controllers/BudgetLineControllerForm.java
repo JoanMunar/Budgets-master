@@ -47,6 +47,7 @@ public class BudgetLineControllerForm extends HttpServlet {
         req.setAttribute("bLine", budgetLine);
         req.setAttribute("date", budgetDate);
 
+
         rd.forward(req, resp);
     }
 

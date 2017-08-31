@@ -2,15 +2,11 @@ package controllers;
 
 
 import dao.BudgetDaoImplements;
-import models.Authenticator;
-import models.Status;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import pojo.Budget;
-import pojo.Budget_line;
+
 import pojo.User;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,22 +14,45 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+
+import java.util.Date;
+
 
 public class CreateBudgetControllerForm extends HttpServlet {
 
-    private List<Budget> budgetList = new ArrayList<Budget>();
     private static ApplicationContext appC = new ClassPathXmlApplicationContext("spring-conf.xml");
-
     private BudgetDaoImplements bdi = (BudgetDaoImplements) appC.getBean("budgetDaoImplements");
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        RequestDispatcher rd = null;
+        String id_budget = req.getParameter("id");
+        User user;
+        int id_user;
+        LocalDate ld = LocalDate.now();
 
+        //Id usuari
+        HttpSession session = req.getSession();
+        user = (User) session.getAttribute("user");
+        id_user = user.getId();
 
-        rd.forward(req, resp);
+        //Obtenir data en yyyy-MM
+        Date date = java.sql.Date.valueOf(ld);
+
+        if(id_budget != null || date != null) {
+
+            try {
+                bdi.createBudget(Integer.parseInt(id_budget), date, id_user);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resp.sendRedirect("/createError.jsp");
+            }
+
+            resp.sendRedirect("/createSuccess.jsp");
+
+        }else {
+            resp.sendRedirect("/createError.jsp");
+        }
     }
 
 }

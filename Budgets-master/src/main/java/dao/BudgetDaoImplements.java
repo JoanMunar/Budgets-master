@@ -18,15 +18,42 @@ public class BudgetDaoImplements implements BudgetDao{
     private ConnectionFactory dbc;
 
 
-    public void createBudget( String id, String name, String units, Double price) throws SQLException {
+    public void createBudget(int id_budget, Date data, int id_user) throws SQLException {
 
-        String sql = "INSERT into pfinal.budget VALUES(?,?)";
+        String sql = "INSERT into pfinal.budget VALUES(?,?,?)";
 
         PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
 
-        ps.setString(2, name);
-        ps.setString(3,units);
-        ps.setString(4, String.valueOf(price));
+        ps.setInt(1, id_budget);
+        try {
+            ps.setDate(2, (java.sql.Date) data);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        ps.setInt(3, id_user);
+
+        ps.execute();
+
+        if (dbc != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+            /* Ignore */
+            }
+        }
+
+    }
+
+    public void createBudgetLine(int code, String name, int units, int price, int id_budget) throws SQLException {
+
+        String sql = "INSERT into pfinal.budget_line VALUES(?,?,?,?,?)";
+
+        PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
+
+        ps.setInt(1, code);
+        ps.setString(2,name);
+        ps.setInt(3, units);
+        ps.setInt(4, price);
 
         ps.execute();
 
@@ -38,17 +65,17 @@ public class BudgetDaoImplements implements BudgetDao{
             }
         }
     }
-    public void deleteBudget(String name) throws SQLException {
+    public void deleteBudget(int id_budget) throws SQLException {
 
-        String sql = "DELETE FROM pfinal.budget WHERE name=?";
+        String sql = "DELETE FROM pfinal.budget WHERE id_budget=?";
 
         PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
-        ps.setString(1, name);
+        ps.setInt(1, id_budget);
         ps.execute();
 
-        sql = "DELETE FROM pfinal.budget WHERE name = ?";
+        sql = "DELETE FROM pfinal.budget WHERE id_budget = ?";
         ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
-        ps.setString(1, name);
+        ps.setInt(1, id_budget);
         ps.execute();
 
         if (dbc != null) {
@@ -61,34 +88,6 @@ public class BudgetDaoImplements implements BudgetDao{
 
     }
 
-
-/*    public List<Budget_line> budgetLine() throws SQLException {
-
-        String sql = "SELECT * FROM pfinal.budget_line";
-        List<Budget_line> budgetLines = new ArrayList<Budget_line>();
-        PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-
-            int budgetId = rs.getInt("budget_line.code");
-            String budgetName = rs.getString("budget_line.name");
-            double budgetUnits = rs.getDouble("budget_line.units");
-            double budgetPrice = rs.getDouble("budget_line.price");
-
-            Budget_line budget = new Budget_line(budgetId, budgetName,budgetUnits, budgetPrice);
-            budgetLines.add(budget);
-
-        }
-        if (dbc != null) {
-            try {
-                ps.close();
-            } catch (SQLException e) {
-            *//* Ignore *//*
-            }
-        }
-        return budgetLines;
-
-    }*/
 
     public User getUser(String user) throws SQLException {
         String sql = "SELECT * FROM pfinal.user where user='" + user +"'";
@@ -110,7 +109,6 @@ public class BudgetDaoImplements implements BudgetDao{
         }
         return null;
     }
-
 
 
     public List<Budget> budget(int userCode) throws SQLException {
@@ -159,6 +157,56 @@ public class BudgetDaoImplements implements BudgetDao{
         return null;
     }
 
+    public List<Budget> budgetId(int id) throws SQLException {
+        String sql = "SELECT budget.id_budget FROM pfinal.budget,pfinal.budget_line WHERE budget.id_budget = budget_line.id_budget and budget_line.id_budget=?";
+        List<Budget> budgetList = new ArrayList<Budget>();
+
+        PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
+        ps.setInt(1,id);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+
+            int budgetCode = rs.getInt("budget.id_budget");
+
+            Budget budget = new Budget(budgetCode);
+            budgetList.add(budget);
+
+        }
+        if (dbc != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+            /* Ignore */
+            }
+        }
+        return budgetList;
+    }
+
+    public List<Budget> getBudgetUserId(int id_budget) throws SQLException {
+
+        String sql = "SELECT * FROM pfinal.budget WHERE budget.id_budget=?";
+        List<Budget> budgetList = new ArrayList<Budget>();
+
+        PreparedStatement ps = (PreparedStatement) dbc.getConnection().prepareStatement(sql);
+        ps.setInt(1,id_budget);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+
+            int user_id = rs.getInt("budget.id_user");
+
+            Budget budget = new Budget(user_id);
+            budgetList.add(budget);
+
+        }
+        if (dbc != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+            /* Ignore */
+            }
+        }
+        return budgetList;
+    }
 
     public List<Budget_line> budgetLineId(int id_budget) throws SQLException {
         String sql = "SELECT * FROM pfinal.budget_line WHERE budget_line.id_budget=?";

@@ -24,6 +24,16 @@
     <servlet-class>controllers.CreateBudgetControllerForm</servlet-class>
   </servlet>
 
+  <servlet>
+    <servlet-name>CreateBudgetLine</servlet-name>
+    <servlet-class>controllers.CreateBudgetLineControllerForm</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>DeleteBudget</servlet-name>
+    <servlet-class>controllers.DeleteBudgetForm</servlet-class>
+  </servlet>
+
   <!--Mapping-->
   <servlet-mapping>
     <servlet-name>BudgetList</servlet-name>
@@ -43,5 +53,15 @@
   <servlet-mapping>
     <servlet-name>CreateBudget</servlet-name>
     <url-pattern>/CreateBudget</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>CreateBudgetLine</servlet-name>
+    <url-pattern>/CreateBudgetLine</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>DeleteBudget</servlet-name>
+    <url-pattern>/DeleteBudget</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -27,3 +27,4 @@
         </table>
     </c:when>
 </c:choose>
+<a href="createBudgetLine.jsp">Crear nova linia de presupost</a>

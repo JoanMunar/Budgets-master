@@ -1,11 +1,8 @@
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<c:forEach items="${requestScope['bLine']}" var = 'budget_line'>
+<c:forEach items="${requestScope['bLine']}" var = 'budget_line' end="0">
 
-    <c:set var = "string1" value = "${budget_line.id}"/>
-    <c:set var = "string2" value = "${fn:substring(string1, 0, 1)}" />
+    <c:out value="${budget_line.id}" />
 
 </c:forEach>
-
-${string2}
